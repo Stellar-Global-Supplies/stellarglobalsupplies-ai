@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.4",
+    "@tavily/core": "^0.7.6",
     "bcryptjs": "^2.4.3",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
