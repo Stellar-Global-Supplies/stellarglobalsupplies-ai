@@ -1,22 +1,44 @@
 services:
+  # ── Backend API ──────────────────────────────────────────────
   - type: web
-    name: stellar-ai
+    name: gemini-clone-api
     runtime: docker
-    plan: free
-    dockerfilePath: ./Dockerfile
-    healthCheckPath: /api/health
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3001
-      - key: NEON_CONNECTION_STRING
-        sync: false
+        value: 4000
+      - key: DATABASE_URL
+        sync: false          # set in Render dashboard
       - key: JWT_SECRET
         generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
       - key: GROQ_API_KEY
         sync: false
       - key: BRAVE_API_KEY
         sync: false
-      - key: HF_TOKEN
+      - key: ENT_DATABASE_URL
         sync: false
+      - key: ADMIN_KEY
+        generateValue: true
+      - key: FRONTEND_URL
+        fromService:
+          name: gemini-clone-ui
+          type: web
+          property: host
+
+  # ── Frontend ─────────────────────────────────────────────────
+  - type: web
+    name: gemini-clone-ui
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: starter
+    buildArgs:
+      - key: VITE_API_URL
+        value: https://gemini-clone-api.onrender.com/api

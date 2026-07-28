@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars and fill in (never commit this file)
+render_api_key   = "rnd_xxx"
+render_owner_id  = "usr_xxx"                        # from Render dashboard → Account Settings
+database_url     = "postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require"
+groq_api_key     = "gsk_xxx"
+brave_api_key    = "BSA_xxx"
+ent_database_url = ""                               # optional
+admin_key        = "your-strong-random-admin-key"

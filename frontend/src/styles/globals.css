@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html, body, #root { height: 100%; margin: 0; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #3c4043; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #5f6368; }
+}
+
+/* Stellar gradient text — teal brand */
+.gem-gradient {
+  background: linear-gradient(135deg, #00B98E 0%, #00d4a4 50%, #00B98E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Stellar logo spinner */
+.gem-logo {
+  width: 28px; height: 28px;
+  background: conic-gradient(from 0deg, #00B98E, #00d4a4, #34d399, #00916f, #00B98E);
+  border-radius: 50%;
+  mask: radial-gradient(circle at center, transparent 35%, black 36%);
+  -webkit-mask: radial-gradient(circle at center, transparent 35%, black 36%);
+}
+
+/* Message bubbles */
+.prose-gem pre { background: #1e1f20; border: 1px solid #3c4043; border-radius: 8px; }
+.prose-gem code { color: #00B98E; }
+.prose-gem h1,.prose-gem h2,.prose-gem h3 { color: #e3e3e3; }
+.prose-gem a { color: #00B98E; }
+.prose-gem blockquote { border-left-color: #3c4043; color: #9aa0a6; }
+
+/* Toggle pill */
+.toggle-pill {
+  @apply flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
+         border border-border bg-surface-1 text-text-secondary
+         hover:bg-surface-2 hover:text-text-primary transition-all cursor-pointer select-none;
+}
+.toggle-pill.active {
+  @apply border-gem-blue bg-gem-blue/10 text-gem-blue;
+}
