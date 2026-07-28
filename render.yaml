@@ -1,10 +1,10 @@
 services:
-  # ── Backend API ──────────────────────────────────────────────
+  # ── Backend + Frontend (single container) ────────────────────
   - type: web
     name: gemini-clone-api
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerContext: .
     plan: free
     healthCheckPath: /health
     envVars:
@@ -13,7 +13,7 @@ services:
       - key: PORT
         value: 4000
       - key: DATABASE_URL
-        sync: false          # set in Render dashboard
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
@@ -27,16 +27,4 @@ services:
       - key: ADMIN_KEY
         generateValue: true
       - key: FRONTEND_URL
-        fromService:
-          name: gemini-clone-ui
-          type: web
-          property: host
-
-  # ── Frontend ─────────────────────────────────────────────────
-  - type: web
-    name: gemini-clone-ui
-    runtime: docker
-    dockerfilePath: ./frontend/Dockerfile
-    dockerContext: ./frontend
-    plan: free
-    envVars: []
+        sync: false

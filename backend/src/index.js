@@ -41,6 +41,9 @@ app.use(express.json({ limit: "10mb" }));
 const limiter = rateLimit({ windowMs: 60_000, max: 100 });
 app.use("/api/", limiter);
 
+// Serve frontend static files
+app.use(express.static("public"));
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
@@ -51,6 +54,12 @@ app.use("/api/ent", entRoutes);
 app.use("/api/models", modelsRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
+
+// SPA fallback — serve index.html for all non-API routes
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api/")) return res.status(404).json({ error: "Not found" });
+  res.sendFile("public/index.html", { root: "." });
+});
 
 // Init DB then start
 initDb().then(() => {
