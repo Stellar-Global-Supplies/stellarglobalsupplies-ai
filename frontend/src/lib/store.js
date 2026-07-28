@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const API = import.meta.env.VITE_API_URL || "/api";
+const API = "/api";
 
 // ── Auth Store ───────────────────────────────────────────────
 export const useAuthStore = create((set, get) => ({
