@@ -7,8 +7,8 @@
   html, body, #root { height: 100%; margin: 0; }
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #3c4043; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #5f6368; }
+  ::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #bdc1c6; }
 }
 
 /* Stellar gradient text — teal brand */
@@ -29,11 +29,11 @@
 }
 
 /* Message bubbles */
-.prose-gem pre { background: #1e1f20; border: 1px solid #3c4043; border-radius: 8px; }
-.prose-gem code { color: #00B98E; }
-.prose-gem h1,.prose-gem h2,.prose-gem h3 { color: #e3e3e3; }
+.prose-gem pre { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; }
+.prose-gem code { color: #00916f; }
+.prose-gem h1,.prose-gem h2,.prose-gem h3 { color: #202124; }
 .prose-gem a { color: #00B98E; }
-.prose-gem blockquote { border-left-color: #3c4043; color: #9aa0a6; }
+.prose-gem blockquote { border-left-color: #00B98E; color: #5f6368; }
 
 /* Toggle pill */
 .toggle-pill {

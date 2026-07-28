@@ -5,12 +5,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Gemini's actual dark palette
+        // Light mode palette
         surface: {
-          DEFAULT: "#131314",
-          1: "#1e1f20",
-          2: "#282a2c",
-          3: "#303133",
+          DEFAULT: "#ffffff",
+          1: "#f8f9fa",
+          2: "#f1f3f4",
+          3: "#e8eaed",
         },
         gem: {
           blue:   "#00B98E",
@@ -19,11 +19,11 @@ export default {
           accent: "#00916f",
         },
         text: {
-          primary:   "#e3e3e3",
-          secondary: "#9aa0a6",
-          disabled:  "#5f6368",
+          primary:   "#202124",
+          secondary: "#5f6368",
+          disabled:  "#9aa0a6",
         },
-        border: "#3c4043",
+        border: "#dadce0",
       },
       fontFamily: {
         sans: ["Google Sans", "Roboto", "ui-sans-serif", "system-ui", "sans-serif"],
