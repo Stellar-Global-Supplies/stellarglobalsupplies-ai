@@ -112,7 +112,7 @@ router.post("/conversations/:id/send", requireAuth, async (req, res) => {
 
   let fullContent = "";
   try {
-    const stream = groq.chat.completions.stream({
+    const stream = await groq.chat.completions.create({
       model,
       messages: [
         { role: "system", content: parts.join("") },
