@@ -134,3 +134,7 @@ local.settings.json
 
 # Test files
 test-results/
+
+# New Relic
+newrelic_agent.log
+newrelic_*.log
