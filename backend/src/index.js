@@ -55,9 +55,13 @@ app.use("/api/models", modelsRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
-// SPA fallback — serve index.html for all non-API routes
+// SPA fallback — serve index.html for all non-API, non-static routes
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api/")) return res.status(404).json({ error: "Not found" });
+  // Don't serve index.html for asset requests - let them 404 properly
+  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json)$/)) {
+    return res.status(404).json({ error: "Asset not found" });
+  }
   res.sendFile("public/index.html", { root: "." });
 });
 
