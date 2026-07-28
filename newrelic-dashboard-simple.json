@@ -1,0 +1,635 @@
+{
+  "name": "Stellar AI - Production Monitoring",
+  "description": "World-class monitoring dashboard for Stellar Global Supplies AI",
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "Overview",
+      "widgets": [
+        {
+          "title": "Apdex Score",
+          "visualization": "viz.billboard",
+          "layout": {"column": 1, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT apdex(duration, t: 0.5) AS 'Apdex' FROM Transaction WHERE appName = 'stellar_ai' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Error Rate %",
+          "visualization": "viz.billboard",
+          "layout": {"column": 4, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentage(count(*), WHERE error IS true) AS 'Error Rate %' FROM Transaction WHERE appName = 'stellar_ai' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Avg Response Time (ms)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 7, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms' FROM Transaction WHERE appName = 'stellar_ai' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Requests Per Minute",
+          "visualization": "viz.billboard",
+          "layout": {"column": 10, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT rate(count(*), 1 minute) AS 'Req/min' FROM Transaction WHERE appName = 'stellar_ai' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Response Time by Endpoint (30 min)",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 4, "width": 8, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) FROM Transaction WHERE appName = 'stellar_ai' AND transactionType = 'Web' FACET transactionName SINCE 30 minutes ago TIMESERIES AUTO LIMIT 10"
+              }
+            ]
+          }
+        },
+        {
+          "title": "HTTP Status Code Distribution",
+          "visualization": "viz.pie",
+          "layout": {"column": 9, "row": 4, "width": 4, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' FACET httpResponseCode SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Throughput by Endpoint (req/min)",
+          "visualization": "viz.area",
+          "layout": {"column": 1, "row": 8, "width": 12, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT rate(count(*), 1 minute) FROM Transaction WHERE appName = 'stellar_ai' FACET transactionName SINCE 1 hour ago TIMESERIES AUTO LIMIT 10"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Performance",
+      "widgets": [
+        {
+          "title": "Top 10 Slowest Endpoints",
+          "visualization": "viz.bar",
+          "layout": {"column": 1, "row": 1, "width": 7, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms' FROM Transaction WHERE appName = 'stellar_ai' AND transactionType = 'Web' FACET transactionName SINCE 1 hour ago LIMIT 10"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Error Distribution by Class",
+          "visualization": "viz.pie",
+          "layout": {"column": 8, "row": 1, "width": 5, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) FROM TransactionError WHERE appName = 'stellar_ai' FACET error.class SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "P50 / P95 / P99 Response Time",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 5, "width": 12, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentile(duration * 1000, 50, 95, 99) FROM Transaction WHERE appName = 'stellar_ai' AND transactionType = 'Web' SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top Error Messages",
+          "visualization": "viz.table",
+          "layout": {"column": 1, "row": 9, "width": 12, "height": 5},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Count', latest(error.message) AS 'Latest Message', latest(transactionName) AS 'Endpoint', max(timestamp) AS 'Last Seen' FROM TransactionError WHERE appName = 'stellar_ai' SINCE 1 hour ago FACET error.class ORDER BY count(*) DESC LIMIT 15"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Database",
+      "widgets": [
+        {
+          "title": "DB Query Avg Duration (ms)",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 1, "width": 8, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms' FROM DatastoreSegment WHERE appName = 'stellar_ai' FACET datastoreType, table SINCE 30 minutes ago TIMESERIES AUTO LIMIT 10"
+              }
+            ]
+          }
+        },
+        {
+          "title": "DB Operations by Type",
+          "visualization": "viz.pie",
+          "layout": {"column": 9, "row": 1, "width": 4, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) FROM DatastoreSegment WHERE appName = 'stellar_ai' FACET operation SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "DB Call Rate (calls/min)",
+          "visualization": "viz.area",
+          "layout": {"column": 1, "row": 5, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT rate(count(*), 1 minute) FROM DatastoreSegment WHERE appName = 'stellar_ai' FACET operation SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "DB Error Rate",
+          "visualization": "viz.line",
+          "layout": {"column": 7, "row": 5, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentage(count(*), WHERE error IS true) AS 'DB Error %' FROM DatastoreSegment WHERE appName = 'stellar_ai' SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Slowest Queries (Top 15)",
+          "visualization": "viz.table",
+          "layout": {"column": 1, "row": 9, "width": 12, "height": 5},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms', max(duration * 1000) AS 'Max ms', count(*) AS 'Calls', latest(table) AS 'Table' FROM DatastoreSegment WHERE appName = 'stellar_ai' SINCE 1 hour ago FACET statement ORDER BY average(duration) DESC LIMIT 15"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "External APIs",
+      "widgets": [
+        {
+          "title": "Groq API - Response Time (ms)",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 1, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms' FROM ExternalSegment WHERE appName = 'stellar_ai' AND host LIKE '%groq%' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Brave Search - Response Time (ms)",
+          "visualization": "viz.line",
+          "layout": {"column": 7, "row": 1, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms' FROM ExternalSegment WHERE appName = 'stellar_ai' AND host LIKE '%brave%' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Gradio Image Gen - Response Time (ms)",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 5, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(duration * 1000) AS 'Avg ms' FROM ExternalSegment WHERE appName = 'stellar_ai' AND host LIKE '%hf.space%' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "All External APIs - Error Rate %",
+          "visualization": "viz.line",
+          "layout": {"column": 7, "row": 5, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentage(count(*), WHERE httpResponseCode >= '400') AS 'Error %' FROM ExternalSegment WHERE appName = 'stellar_ai' FACET host SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "External API Call Volume by Service",
+          "visualization": "viz.bar",
+          "layout": {"column": 1, "row": 9, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Calls' FROM ExternalSegment WHERE appName = 'stellar_ai' FACET host SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Groq Streaming - P95 Latency (ms)",
+          "visualization": "viz.line",
+          "layout": {"column": 7, "row": 9, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentile(duration * 1000, 95) AS 'P95 ms' FROM ExternalSegment WHERE appName = 'stellar_ai' AND host LIKE '%groq%' SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth and Security",
+      "widgets": [
+        {
+          "title": "Auth Success Rate %",
+          "visualization": "viz.billboard",
+          "layout": {"column": 1, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentage(count(*), WHERE httpResponseCode = '200') AS 'Success %' FROM Transaction WHERE appName = 'stellar_ai' AND request.uri LIKE '%/api/auth/login%' SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Rate Limit Hits (429s)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 4, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS '429 Hits' FROM Transaction WHERE appName = 'stellar_ai' AND httpResponseCode = '429' SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Unauthorized Requests (401s)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 7, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS '401s' FROM Transaction WHERE appName = 'stellar_ai' AND httpResponseCode = '401' SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Forbidden Requests (403s)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 10, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS '403s' FROM Transaction WHERE appName = 'stellar_ai' AND httpResponseCode = '403' SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Auth Attempts Over Time",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 4, "width": 8, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Total', filter(count(*), WHERE httpResponseCode = '200') AS 'Success', filter(count(*), WHERE httpResponseCode = '401') AS 'Failed' FROM Transaction WHERE appName = 'stellar_ai' AND request.uri LIKE '%/api/auth/login%' SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Rate Limit Hits by IP",
+          "visualization": "viz.table",
+          "layout": {"column": 9, "row": 4, "width": 4, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Hits' FROM Transaction WHERE appName = 'stellar_ai' AND httpResponseCode = '429' FACET request.headers.x-forwarded-for SINCE 1 hour ago ORDER BY count(*) DESC LIMIT 10"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Failed Auth Attempts Detail",
+          "visualization": "viz.table",
+          "layout": {"column": 1, "row": 8, "width": 12, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Count', latest(error.message) AS 'Error', max(timestamp) AS 'Last Attempt' FROM TransactionError WHERE appName = 'stellar_ai' AND transactionName LIKE '%/api/auth%' SINCE 1 hour ago FACET error.message ORDER BY count(*) DESC LIMIT 10"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Activity",
+      "widgets": [
+        {
+          "title": "Active Sessions",
+          "visualization": "viz.billboard",
+          "layout": {"column": 1, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT uniqueCount(session) AS 'Active Sessions' FROM Transaction WHERE appName = 'stellar_ai' SINCE 30 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Chat Messages Per Minute",
+          "visualization": "viz.billboard",
+          "layout": {"column": 4, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT rate(count(*), 1 minute) AS 'Msgs/min' FROM Transaction WHERE appName = 'stellar_ai' AND request.uri LIKE '%/api/chat%/send%' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Web Searches Per Minute",
+          "visualization": "viz.billboard",
+          "layout": {"column": 7, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT rate(count(*), 1 minute) AS 'Searches/min' FROM Transaction WHERE appName = 'stellar_ai' AND request.uri LIKE '%/api/search%' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Image Generations Per Hour",
+          "visualization": "viz.billboard",
+          "layout": {"column": 10, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Images/hr' FROM Transaction WHERE appName = 'stellar_ai' AND request.uri LIKE '%/api/image%' SINCE 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Feature Usage Over Time",
+          "visualization": "viz.area",
+          "layout": {"column": 1, "row": 4, "width": 8, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' FACET cases(WHERE request.uri LIKE '%/api/chat%' AS 'Chat', WHERE request.uri LIKE '%/api/search%' AS 'Web Search', WHERE request.uri LIKE '%/api/image%' AS 'Image Gen', WHERE request.uri LIKE '%/api/files%' AS 'File Upload', WHERE request.uri LIKE '%/api/ent%' AS 'Ent Data') SINCE 2 hours ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Feature Share (24h)",
+          "visualization": "viz.pie",
+          "layout": {"column": 9, "row": 4, "width": 4, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' FACET cases(WHERE request.uri LIKE '%/api/chat%' AS 'Chat', WHERE request.uri LIKE '%/api/search%' AS 'Web Search', WHERE request.uri LIKE '%/api/image%' AS 'Image Gen', WHERE request.uri LIKE '%/api/files%' AS 'File Upload', WHERE request.uri LIKE '%/api/ent%' AS 'Ent Data') SINCE 24 hours ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "LLM Model Usage (24h)",
+          "visualization": "viz.bar",
+          "layout": {"column": 1, "row": 8, "width": 12, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT count(*) AS 'Requests' FROM Transaction WHERE appName = 'stellar_ai' AND request.uri LIKE '%/api/chat%' FACET request.parameters.model SINCE 24 hours ago LIMIT 10"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "System Health",
+      "widgets": [
+        {
+          "title": "Heap Used (MB)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 1, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT latest(newrelic.timeslice.value) * 1000 AS 'Heap MB' FROM Metric WHERE metricTimesliceName = 'Memory/Heap/Used' AND appName = 'stellar_ai' SINCE 2 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Event Loop Lag (ms)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 4, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(newrelic.timeslice.value) AS 'Loop Lag ms' FROM Metric WHERE metricTimesliceName = 'EventLoop/Lag/Current' AND appName = 'stellar_ai' SINCE 2 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "GC Pause Time (ms)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 7, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(newrelic.timeslice.value) AS 'GC ms' FROM Metric WHERE metricTimesliceName LIKE 'GC/%' AND appName = 'stellar_ai' SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active Connections",
+          "visualization": "viz.billboard",
+          "layout": {"column": 10, "row": 1, "width": 3, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(newrelic.timeslice.value) AS 'Connections' FROM Metric WHERE metricTimesliceName = 'Agent/Connections/Current' AND appName = 'stellar_ai' SINCE 2 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Heap Used Trend (MB)",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 4, "width": 8, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(newrelic.timeslice.value) AS 'Heap Used MB' FROM Metric WHERE metricTimesliceName = 'Memory/Heap/Used' AND appName = 'stellar_ai' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Event Loop Lag Trend",
+          "visualization": "viz.line",
+          "layout": {"column": 9, "row": 4, "width": 4, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(newrelic.timeslice.value) AS 'Lag ms' FROM Metric WHERE metricTimesliceName = 'EventLoop/Lag/Current' AND appName = 'stellar_ai' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CPU User Time %",
+          "visualization": "viz.area",
+          "layout": {"column": 1, "row": 8, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT average(newrelic.timeslice.value) AS 'CPU %' FROM Metric WHERE metricTimesliceName = 'CPU/User Time' AND appName = 'stellar_ai' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Transaction Throughput (Tx/min)",
+          "visualization": "viz.line",
+          "layout": {"column": 7, "row": 8, "width": 6, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT rate(count(*), 1 minute) AS 'Tx/min' FROM Transaction WHERE appName = 'stellar_ai' SINCE 30 minutes ago TIMESERIES AUTO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alerts and SLOs",
+      "widgets": [
+        {
+          "title": "SLO - Availability (target 99.9%)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 1, "row": 1, "width": 4, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentage(count(*), WHERE httpResponseCode < '500') AS 'Availability %' FROM Transaction WHERE appName = 'stellar_ai' SINCE 7 days ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "SLO - Latency P95 (target < 2s)",
+          "visualization": "viz.billboard",
+          "layout": {"column": 5, "row": 1, "width": 4, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentile(duration * 1000, 95) AS 'P95 ms' FROM Transaction WHERE appName = 'stellar_ai' SINCE 7 days ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "SLO - Error Budget Remaining",
+          "visualization": "viz.billboard",
+          "layout": {"column": 9, "row": 1, "width": 4, "height": 3},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT (0.1 - percentage(count(*), WHERE httpResponseCode >= '500')) AS 'Error Budget %' FROM Transaction WHERE appName = 'stellar_ai' SINCE 30 days ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Error Rate Trend - 7 Days",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 4, "width": 12, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT percentage(count(*), WHERE httpResponseCode >= '500') AS '5xx %', percentage(count(*), WHERE httpResponseCode >= '400' AND httpResponseCode < '500') AS '4xx %' FROM Transaction WHERE appName = 'stellar_ai' SINCE 7 days ago TIMESERIES 1 hour"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Apdex Trend - 7 Days",
+          "visualization": "viz.line",
+          "layout": {"column": 1, "row": 8, "width": 12, "height": 4},
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "query": "SELECT apdex(duration, t: 0.5) AS 'Apdex' FROM Transaction WHERE appName = 'stellar_ai' SINCE 7 days ago TIMESERIES 1 hour"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
