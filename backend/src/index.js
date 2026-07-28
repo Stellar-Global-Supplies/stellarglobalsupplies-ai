@@ -18,8 +18,10 @@ const PORT = process.env.PORT || 4000;
 
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+const corsOrigin = frontendUrl.startsWith("http") ? frontendUrl : `https://${frontendUrl}`;
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: corsOrigin,
   credentials: true,
 }));
 app.use(express.json({ limit: "10mb" }));
