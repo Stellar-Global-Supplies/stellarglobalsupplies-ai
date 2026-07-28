@@ -1,0 +1,299 @@
+{
+  "title": "Stellar AI - Production Monitoring",
+  "description": "World-class monitoring dashboard for Stellar Global Supplies AI - Gemini Clone Backend",
+  "icon": "activity",
+  "visibility": "all",
+  "editable": true,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": "High-level application performance metrics",
+      "widgets": [
+        {
+          "title": "Apdex Score",
+          "visualization": "gauge",
+          "nrql": "SELECT Apdex(apm.service.transaction.duration, threshold: 0.5) FROM Metric WHERE appName = 'stellar_ai' SINCE 5 minutes ago",
+          "thresholds": [
+            {
+              "color": "red",
+              "value": 0.5
+            },
+            {
+              "color": "yellow",
+              "value": 0.8
+            },
+            {
+              "color": "green",
+              "value": 0.9
+            }
+          ],
+          "row": 1,
+          "column": 1,
+          "width": 3,
+          "height": 2
+        },
+        {
+          "title": "Error Rate",
+          "visualization": "line_chart",
+          "nrql": "SELECT percentage(count(*), WHERE error is true) FROM Transaction WHERE appName = 'stellar_ai' SINCE 30 minutes ago",
+          "row": 1,
+          "column": 4,
+          "width": 6,
+          "height": 2
+        },
+        {
+          "title": "Throughput (Requests/min)",
+          "visualization": "line_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' FACET transactionName SINCE 30 minutes ago",
+          "row": 1,
+          "column": 10,
+          "width": 6,
+          "height": 2
+        },
+        {
+          "title": "Response Time by Endpoint",
+          "visualization": "line_chart",
+          "nrql": "SELECT average(duration) FROM Transaction WHERE appName = 'stellar_ai' AND transactionType = 'Web' FACET transactionName SINCE 30 minutes ago",
+          "row": 3,
+          "column": 1,
+          "width": 12,
+          "height": 4
+        },
+        {
+          "title": "HTTP Status Codes",
+          "visualization": "faceted_area_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' FACET http.statusCode SINCE 1 hour ago",
+          "row": 3,
+          "column": 13,
+          "width": 3,
+          "height": 4
+        }
+      ]
+    },
+    {
+      "name": "API Performance",
+      "description": "Detailed API endpoint performance metrics",
+      "widgets": [
+        {
+          "title": "Slowest Endpoints (Avg Duration)",
+          "visualization": "bar_chart",
+          "nrql": "SELECT average(duration) FROM Transaction WHERE appName = 'stellar_ai' AND transactionType = 'Web' FACET transactionName SINCE 1 hour ago LIMIT 10",
+          "row": 1,
+          "column": 1,
+          "width": 8,
+          "height": 4
+        },
+        {
+          "title": "Error Distribution by Type",
+          "visualization": "pie_chart",
+          "nrql": "SELECT count(*) FROM TransactionError WHERE appName = 'stellar_ai' FACET error.class SINCE 1 hour ago",
+          "row": 1,
+          "column": 9,
+          "width": 7,
+          "height": 4
+        },
+        {
+          "title": "Top Error Messages",
+          "visualization": "table",
+          "nrql": "SELECT count(*) as 'Error Count', latest(error.message) as 'Latest Error', max(timestamp) as 'Last Occurred' FROM TransactionError WHERE appName = 'stellar_ai' SINCE 1 hour ago GROUP BY error.message ORDER BY count(*) DESC LIMIT 10",
+          "row": 5,
+          "column": 1,
+          "width": 16,
+          "height": 5
+        }
+      ]
+    },
+    {
+      "name": "Database Performance",
+      "description": "Database query performance and metrics",
+      "widgets": [
+        {
+          "title": "Database Query Time",
+          "visualization": "line_chart",
+          "nrql": "SELECT average(duration) FROM DatastoreStatement WHERE appName = 'stellar_ai' FACET statement SINCE 30 minutes ago LIMIT 5",
+          "row": 1,
+          "column": 1,
+          "width": 12,
+          "height": 4
+        },
+        {
+          "title": "Database Operations by Type",
+          "visualization": "pie_chart",
+          "nrql": "SELECT count(*) FROM DatastoreStatement WHERE appName = 'stellar_ai' FACET datastoreOperation SINCE 1 hour ago",
+          "row": 1,
+          "column": 13,
+          "width": 4,
+          "height": 4
+        },
+        {
+          "title": "Slow Database Queries",
+          "visualization": "table",
+          "nrql": "SELECT average(duration) as 'Avg Duration', max(duration) as 'Max Duration', count(*) as 'Count' FROM DatastoreStatement WHERE appName = 'stellar_ai' SINCE 1 hour ago FACET statement ORDER BY average(duration) DESC LIMIT 10",
+          "row": 5,
+          "column": 1,
+          "width": 16,
+          "height": 5
+        }
+      ]
+    },
+    {
+      "name": "External APIs",
+      "description": "External service monitoring (Groq, Tavily, Gradio)",
+      "widgets": [
+        {
+          "title": "External API Response Times",
+          "visualization": "line_chart",
+          "nrql": "SELECT average(duration) FROM External WHERE appName = 'stellar_ai' FACET url SINCE 30 minutes ago",
+          "row": 1,
+          "column": 1,
+          "width": 12,
+          "height": 4
+        },
+        {
+          "title": "External API Error Rate",
+          "visualization": "line_chart",
+          "nrql": "SELECT percentage(count(*), WHERE http.statusCode >= 400) FROM External WHERE appName = 'stellar_ai' FACET url SINCE 1 hour ago",
+          "row": 1,
+          "column": 13,
+          "width": 4,
+          "height": 4
+        },
+        {
+          "title": "External API Call Volume",
+          "visualization": "bar_chart",
+          "nrql": "SELECT count(*) FROM External WHERE appName = 'stellar_ai' FACET url SINCE 1 hour ago",
+          "row": 5,
+          "column": 1,
+          "width": 8,
+          "height": 4
+        },
+        {
+          "title": "External API Status Codes",
+          "visualization": "faceted_area_chart",
+          "nrql": "SELECT count(*) FROM External WHERE appName = 'stellar_ai' FACET http.statusCode SINCE 1 hour ago",
+          "row": 5,
+          "column": 9,
+          "width": 8,
+          "height": 4
+        }
+      ]
+    },
+    {
+      "name": "Authentication & Security",
+      "description": "Authentication metrics and security monitoring",
+      "widgets": [
+        {
+          "title": "Authentication Success Rate",
+          "visualization": "line_chart",
+          "nrql": "SELECT percentage(count(*), WHERE error is false) FROM Transaction WHERE appName = 'stellar_ai' AND transactionName LIKE '%/api/auth%' SINCE 1 hour ago",
+          "row": 1,
+          "column": 1,
+          "width": 8,
+          "height": 3
+        },
+        {
+          "title": "Rate Limiting Hits",
+          "visualization": "line_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' AND http.statusCode = 429 SINCE 1 hour ago",
+          "row": 1,
+          "column": 9,
+          "width": 8,
+          "height": 3
+        },
+        {
+          "title": "Failed Authentication Attempts",
+          "visualization": "table",
+          "nrql": "SELECT count(*) as 'Failure Count', latest(error.message) as 'Error Message' FROM TransactionError WHERE appName = 'stellar_ai' AND transactionName LIKE '%/api/auth%' SINCE 1 hour ago GROUP BY error.message ORDER BY count(*) DESC LIMIT 10",
+          "row": 4,
+          "column": 1,
+          "width": 16,
+          "height": 4
+        }
+      ]
+    },
+    {
+      "name": "User Activity",
+      "description": "User engagement and feature usage metrics",
+      "widgets": [
+        {
+          "title": "Active Users (Unique Sessions)",
+          "visualization": "line_chart",
+          "nrql": "SELECT uniqueCount(session) FROM Transaction WHERE appName = 'stellar_ai' SINCE 1 hour ago",
+          "row": 1,
+          "column": 1,
+          "width": 6,
+          "height": 3
+        },
+        {
+          "title": "Chat Messages per Minute",
+          "visualization": "line_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' AND transactionName LIKE '%/api/chat%' SINCE 30 minutes ago",
+          "row": 1,
+          "column": 7,
+          "width": 5,
+          "height": 3
+        },
+        {
+          "title": "Search Queries per Minute",
+          "visualization": "line_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' AND transactionName LIKE '%/api/search%' SINCE 30 minutes ago",
+          "row": 1,
+          "column": 12,
+          "width": 5,
+          "height": 3
+        },
+        {
+          "title": "Feature Usage Distribution (24h)",
+          "visualization": "bar_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' FACET transactionName SINCE 24 hours ago",
+          "row": 4,
+          "column": 1,
+          "width": 16,
+          "height": 4
+        }
+      ]
+    },
+    {
+      "name": "System Health",
+      "description": "Infrastructure and system metrics",
+      "widgets": [
+        {
+          "title": "Memory Usage",
+          "visualization": "line_chart",
+          "nrql": "SELECT average(memory.heapUsed / 1024 / 1024) as 'Heap Used (MB)', average(memory.heapTotal / 1024 / 1024) as 'Heap Total (MB)', average(memory.rss / 1024 / 1024) as 'RSS (MB)' FROM Metric WHERE appName = 'stellar_ai' SINCE 30 minutes ago",
+          "row": 1,
+          "column": 1,
+          "width": 8,
+          "height": 3
+        },
+        {
+          "title": "Event Loop Lag",
+          "visualization": "line_chart",
+          "nrql": "SELECT average(eventLoopTime) FROM Metric WHERE appName = 'stellar_ai' SINCE 30 minutes ago",
+          "row": 1,
+          "column": 9,
+          "width": 8,
+          "height": 3
+        },
+        {
+          "title": "CPU Utilization",
+          "visualization": "line_chart",
+          "nrql": "SELECT average(cpu.utilization) FROM Metric WHERE appName = 'stellar_ai' SINCE 30 minutes ago",
+          "row": 4,
+          "column": 1,
+          "width": 8,
+          "height": 3
+        },
+        {
+          "title": "Transaction Throughput",
+          "visualization": "line_chart",
+          "nrql": "SELECT count(*) FROM Transaction WHERE appName = 'stellar_ai' SINCE 30 minutes ago",
+          "row": 4,
+          "column": 9,
+          "width": 8,
+          "height": 3
+        }
+      ]
+    }
+  ]
+}
