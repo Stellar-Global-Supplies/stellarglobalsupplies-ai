@@ -9,8 +9,9 @@
 exports.config = {
   /**
    * Array of application names.
+   * Can be set via NEW_RELIC_APP_NAME environment variable.
    */
-  app_name: ['Stellar AI Backend'],
+  app_name: process.env.NEW_RELIC_APP_NAME || ['Stellar AI Backend'],
   
   /**
    * Your New Relic license key (set in environment variable).
