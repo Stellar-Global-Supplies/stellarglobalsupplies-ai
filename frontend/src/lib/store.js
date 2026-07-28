@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const API = "/api";
+const API = "https://gemini-clone-api.onrender.com/api";
 
 // ── Auth Store ───────────────────────────────────────────────
 export const useAuthStore = create((set, get) => ({
