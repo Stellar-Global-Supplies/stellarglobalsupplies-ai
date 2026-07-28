@@ -18,10 +18,18 @@ const PORT = process.env.PORT || 4000;
 
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-const corsOrigin = frontendUrl.startsWith("http") ? frontendUrl : `https://${frontendUrl}`;
+// Render's fromService returns just the hostname (e.g. "gemini-clone-ui") without protocol or domain.
+// Default to localhost for dev, and accept all onrender.com subdomains for production.
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 app.use(cors({
-  origin: corsOrigin,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (origin.startsWith("http://localhost")) return callback(null, true);
+    if (origin.endsWith(".onrender.com") || origin === `https://${FRONTEND_URL}` || origin.startsWith(`https://${FRONTEND_URL}`)) {
+      return callback(null, true);
+    }
+    callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: "10mb" }));
