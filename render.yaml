@@ -39,6 +39,6 @@ services:
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     plan: starter
-    buildArgs:
-      - key: VITE_API_URL
-        value: https://.onrender.com/api
+    envVars:
+    - key: VITE_API_URL
+      value: https://gemini-clone-api.onrender.com/api
