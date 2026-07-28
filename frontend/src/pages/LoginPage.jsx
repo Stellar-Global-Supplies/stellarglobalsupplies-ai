@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../lib/store.js";
 import { useNavigate } from "react-router-dom";
+import { StellarGearIcon } from "../components/StellarGearLogo.jsx";
 
 export default function LoginPage() {
   const { login } = useAuthStore();
@@ -118,24 +119,5 @@ export default function LoginPage() {
 }
 
 export function StellarIcon({ size = 32 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <defs>
-        <linearGradient id="sg-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#00B98E" />
-          <stop offset="100%" stopColor="#00d4a4" />
-        </linearGradient>
-      </defs>
-      {/* Five-pointed star — Stellar */}
-      <path
-        d="M20 4
-           L22.9 14.6 L34 14.6
-           L25.5 21.4 L28.5 32
-           L20 25.2 L11.5 32
-           L14.5 21.4 L6 14.6
-           L17.1 14.6 Z"
-        fill="url(#sg-grad)"
-      />
-    </svg>
-  );
+  return <StellarGearIcon size={size} />;
 }

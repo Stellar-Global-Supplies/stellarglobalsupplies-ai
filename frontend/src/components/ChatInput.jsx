@@ -146,7 +146,7 @@ export default function ChatInput({ onSend, onImageGenerate, disabled }) {
           value={value}
           onChange={(e) => { setValue(e.target.value); autoResize(); }}
           onKeyDown={handleKeyDown}
-          placeholder="Ask Gemini"
+          placeholder="Ask Stellar AI"
           rows={1}
           className="w-full bg-transparent px-4 py-3 text-text-primary placeholder-text-disabled
                      text-sm resize-none focus:outline-none leading-relaxed"

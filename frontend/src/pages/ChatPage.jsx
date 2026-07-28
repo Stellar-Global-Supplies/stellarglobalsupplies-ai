@@ -6,6 +6,7 @@ import ChatInput from "../components/ChatInput.jsx";
 import ImagePanel from "../components/ImagePanel.jsx";
 import EntDataPanel from "../components/EntDataPanel.jsx";
 import { Menu, Database, Zap, Package, Wrench, BarChart3 } from "lucide-react";
+import StellarGearLogo from "../components/StellarGearLogo.jsx";
 
 export default function ChatPage() {
   const { messages, sendMessage, streaming, fetchModels, useEnt } = useChatStore();
@@ -104,18 +105,7 @@ export default function ChatPage() {
 function StellarWordmark() {
   return (
     <div className="flex items-center gap-2">
-      <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
-        <defs>
-          <linearGradient id="hw2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#00B98E" />
-            <stop offset="100%" stopColor="#00d4a4" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M20 4 L22.9 14.6 L34 14.6 L25.5 21.4 L28.5 32 L20 25.2 L11.5 32 L14.5 21.4 L6 14.6 L17.1 14.6 Z"
-          fill="url(#hw2)"
-        />
-      </svg>
+      <StellarGearLogo size={22} />
       <span className="text-base font-medium gem-gradient">Stellar AI</span>
     </div>
   );
@@ -136,18 +126,7 @@ function WelcomeScreen({ onSuggest }) {
     <div className="flex flex-col items-center justify-center h-full px-6 py-12 animate-fade-in">
       <div className="mb-8 text-center">
         <div className="flex justify-center mb-6">
-          <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
-            <defs>
-              <linearGradient id="wg2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#00B98E" />
-                <stop offset="100%" stopColor="#00d4a4" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M20 4 L22.9 14.6 L34 14.6 L25.5 21.4 L28.5 32 L20 25.2 L11.5 32 L14.5 21.4 L6 14.6 L17.1 14.6 Z"
-              fill="url(#wg2)"
-            />
-          </svg>
+          <StellarGearLogo size={56} />
         </div>
         <h1 className="text-4xl font-medium tracking-tight mb-2">
           <span className="gem-gradient">Hello there</span>

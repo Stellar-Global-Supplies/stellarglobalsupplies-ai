@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useState } from "react";
 import { Copy, Check, User } from "lucide-react";
+import { StellarGearIcon } from "./StellarGearLogo.jsx";
 
 export default function Message({ message }) {
   const isUser = message.role === "user";
@@ -139,18 +140,7 @@ function CodeBlock({ language, code }) {
 function GemAvatar() {
   return (
     <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-gem-blue/20 to-gem-purple/20 border border-border">
-      <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
-        <defs>
-          <linearGradient id="ma2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#00B98E" />
-            <stop offset="100%" stopColor="#00d4a4" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M20 4 L22.9 14.6 L34 14.6 L25.5 21.4 L28.5 32 L20 25.2 L11.5 32 L14.5 21.4 L6 14.6 L17.1 14.6 Z"
-          fill="url(#ma2)"
-        />
-      </svg>
+      <StellarGearIcon size={18} />
     </div>
   );
 }
