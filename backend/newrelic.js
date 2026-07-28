@@ -9,9 +9,8 @@
 exports.config = {
   /**
    * Array of application names.
-   * Can be set via NEW_RELIC_APP_NAME environment variable.
    */
-  app_name: process.env.NEW_RELIC_APP_NAME || ['Stellar AI Backend'],
+  app_name: ['stellar_ai'],
   
   /**
    * Your New Relic license key (set in environment variable).
@@ -22,7 +21,7 @@ exports.config = {
    * Sampling configuration - 100% sampling for 2 users
    */
   sampling: {
-    rate: 1.0,  // 100% of transactions
+    rate: 1.0,
   },
   
   /**
@@ -66,11 +65,11 @@ exports.config = {
   },
   
   /**
-   * Don't send stack traces for non-error transactions to reduce data volume.
+   * Transaction tracer configuration.
    */
   transaction_tracer: {
     enabled: true,
-    transaction_threshold: 0,  // Trace all transactions
+    transaction_threshold: 0,
     record_sql: 'obfuscated',
     stack_trace_threshold: 500,
   },
