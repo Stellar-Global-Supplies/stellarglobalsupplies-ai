@@ -41,4 +41,4 @@ services:
     plan: starter
     buildArgs:
       - key: VITE_API_URL
-        value: https://gemini-clone-api.onrender.com/api
+        value: https://.onrender.com/api
