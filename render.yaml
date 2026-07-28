@@ -28,3 +28,7 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         sync: false
+      - key: NEW_RELIC_LICENSE_KEY
+        sync: false
+      - key: NEW_RELIC_APP_NAME
+        value: stellar_ai
