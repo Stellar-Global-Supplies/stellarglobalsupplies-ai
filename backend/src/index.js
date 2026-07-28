@@ -60,7 +60,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicPath = path.join(__dirname, "public");
+// Docker copies frontend build to /app/public, but server is in /app/src/
+// So we need to go up one level from src to find public
+const publicPath = path.join(__dirname, "..", "public");
 
 console.log("📁 Serving static files from:", publicPath);
 
